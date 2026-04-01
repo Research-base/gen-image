@@ -1,0 +1,8 @@
+gradio
+optimum[openvino,diffusers]
+diffusers
+transformers
+accelerate
+torch
+pillow
+numpy
