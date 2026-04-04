@@ -1,5 +1,5 @@
 gradio
-optimum[openvino,diffusers]
+optimum[openvino,diffusers]; sys_platform != 'darwin'
 diffusers
 transformers
 accelerate

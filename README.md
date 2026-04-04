@@ -14,12 +14,18 @@ source venv/bin/activate
 
 ### 2. Install dependencies
 ```bash
+-- Win
 pip install -r requirements.txt
+-- Mac
+pip3 install -r requirements.txt
 ```
 
 ### 3. Run the app (ensure venv is active)
 ```bash
+-- Win
 python app.py
+-- Mac
+python3 app.py
 ```
 
 ## 🛠️ System Architecture (For AI/Devs)
