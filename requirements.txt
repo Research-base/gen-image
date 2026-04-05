@@ -1,8 +1,5 @@
 gradio
-optimum[openvino,diffusers]; sys_platform != 'darwin'
-diffusers
-transformers
-accelerate
-torch
+requests
+google-generativeai
+python-dotenv
 pillow
-numpy

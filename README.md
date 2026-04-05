@@ -1,49 +1,40 @@
-## 🚀 Quick Start (Recommended: Use Virtual Environment)
+# AI Image Generator Lab
 
-### 1. Setup Virtual Environment (Keep your system clean)
-**Windows:**
-```powershell
-python -m venv venv
-.\venv\Scripts\activate
-```
-**macOS / Linux:**
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
+Chào mừng bạn đến với **AI Image Generator Lab**! Đây là một ứng dụng giao diện web nhẹ nhàng được viết bằng Python (Gradio) cho phép bạn tự động sinh hình ảnh thông qua các mô hình AI khác nhau. Mục đích chính của công cụ này là đóng vai trò như một phòng thí nghiệm so sánh giữa mô hình Local LLM (như Ollama, SD) và Gemini API.
 
-### 2. Install dependencies
-```bash
--- Win
-pip install -r requirements.txt
--- Mac
-pip3 install -r requirements.txt
-```
+## 🚀 Các tính năng chính
+- **Tuỳ chọn linh hoạt Engine Sinh Ảnh**: Cho phép chuyển đổi linh hoạt việc vẽ ảnh bằng Local Model hay Gemini.
+- **Tối Ưu Hoá Cơ Sở (Auto-Enhance)**: Sử dụng mô hình xử lý ngôn ngữ của Gemini để "biến hoá" một câu từ đơn giản thành mô tả hình ảnh cực kỳ chi tiết, giúp AI dễ hiểu.
+- **Tuỳ biến Endpoint tự do**: Hỗ trợ gọi API tới một cấu hình URL nội bộ bạn thiết lập (Vd: `http://localhost:11434` của Ollama hay `http://localhost:7860` của ComfyUI/Automatic1111).
+- **Tự động lưu trữ**: Ảnh được sinh ra bất kể cấu hình nào đều sẽ được backup tự động về thư mục `images/` trong thư mục gốc.
 
-### 3. Run the app (ensure venv is active)
-```bash
--- Win
-python app.py
--- Mac
-python3 app.py
-```
+## ⚙️ Yêu cầu Hệ thống
+Bạn cần có cài đặt sẵn `python3` và `pip3` trên máy (thường là mặc định trên MacOS).
 
-## 🛠️ System Architecture (For AI/Devs)
-- **Framework**: `Gradio` (Front-end), `Diffusers`/`Optimum` (Back-end).
-- **Backend Selection**:
-    - **Apple M-Series**: Automatically uses `mps` device via `diffusers.DiffusionPipeline`.
-    - **Windows Intel GPU**: Uses `OVStableDiffusionPipeline` from `optimum.intel`. Exports model to `./ov_model_sd15` for persistent optimization.
-    - **Fallback**: Standard PyTorch CPU.
-- **Model**: Stable Diffusion v1.5 (`runwayml/stable-diffusion-v1-5`).
-- **Core Files**:
-    - `app.py`: UI Layout (Gradio Blocks) and event handling.
-    - `model_manager.py`: Hardware detection and image generation logic.
-    - `requirements.txt`: Unified dependencies for all platforms.
+## 🛠️ Hướng Dẫn Cài Đặt và Chạy
 
-## ⚙️ Default Configurations
-- **Resolution**: 384x384 (Default for performance), adjustable up to 768x768.
-- **Inference Steps**: 20 (Balanced speed/quality).
-- **Guidance Scale**: 7.5.
+1. **Thiết lập API Keys**
+   Sao chép (hoặc đổi tên) file `.env.example` thành `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+   Mở file `.env` bằng trình chỉnh sửa văn bản và dán API Key Gemini của bạn:
+   ```env
+   GEMINI_API_KEY=phím_api_của_bạn_tại_đây
+   ```
 
-## ⚠️ Notes for Intel Users
-The first run on Windows will take **5-10 minutes** as it converts the model to OpenVINO format. Subsequent runs will start instantly.
+2. **Cách cài đặt môi trường:**
+   Chạy lệnh sau tại thư mục chứa dự án:
+   ```bash
+   pip3 install -r requirements.txt
+   ```
+
+3. **Chạy Phần Mềm:**
+   Sau khi quá trình tải thư viện thành công, hãy gõ lệnh khởi động Server:
+   ```bash
+   python3 app.py
+   ```
+   Sau đó mở trình duyệt và truy cập: `http://127.0.0.1:7860/`
+
+## 🗂️ Quản Lý Tập Tin
+Các hình ảnh được lưu trữ tự động sau mỗi lần gen đều nằm trong thư mục `images/`. Định dạng đặt tên được tối ưu dễ tìm kiếm: `[tên_engine]_[timestamp_chi_tiết].png`
