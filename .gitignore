@@ -43,3 +43,7 @@ ov_model_sd15/
 # OS
 .DS_Store
 Thumbs.db
+
+# Output
+images/
+flagged/
