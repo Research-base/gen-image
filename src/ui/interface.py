@@ -8,7 +8,7 @@ from src.api.gemini_api import generate_gemini_image, enhance_prompt_with_gemini
 
 load_dotenv()
 
-def process_generate(prompt, engine, local_url, local_model, neg_prompt, width, height, steps, cfg_scale, seed, auto_enhance):
+def process_generate(prompt, engine, local_url, local_model, gemini_model, neg_prompt, width, height, steps, cfg_scale, seed, auto_enhance):
     # Lấy key trong hàm để cập nhật hot-reload nếu pass key
     GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
     
@@ -32,7 +32,7 @@ def process_generate(prompt, engine, local_url, local_model, neg_prompt, width, 
     if engine == "Local Model":
         img, err = generate_local_image(local_url, local_model, final_prompt, neg_prompt, width, height, steps, cfg_scale, seed)
     elif engine == "Gemini":
-        img, err = generate_gemini_image(final_prompt, GEMINI_KEY)
+        img, err = generate_gemini_image(final_prompt, GEMINI_KEY, gemini_model)
     else:
         err = "Engine not supported."
         
@@ -84,9 +84,12 @@ def build_ui():
                     with gr.Group():
                         engine = gr.Radio(["Local Model", "Gemini"], label="🤖 Lõi Xử Lý (Active Engine)", value="Local Model", interactive=True)
                         
-                        with gr.Accordion("🔌 Local Model Settings", open=True):
+                        with gr.Accordion("🔌 Local Model Settings", open=True, visible=True) as local_settings:
                             local_url = gr.Textbox(label="API URL", value="http://localhost:11434/api/generate", info="VD: Ollama (/api/generate) hoặc SD WebUI (http://127.0.0.1:7860/sdapi/v1/txt2img)")
                             local_model = gr.Textbox(label="Model Name", value="x/flux2-klein:9b", info="Tên model chạy trên Local (VD: x/flux2-klein:9b)")
+                        
+                        with gr.Accordion("☁️ Gemini Settings", open=True, visible=False) as gemini_settings:
+                            gemini_model = gr.Dropdown(choices=["imagen-4.0-generate-001", "imagen-4.0-ultra-generate-001", "imagen-4.0-fast-generate-001"], label="Gemini Model", value="imagen-4.0-generate-001", info="Mô hình API Imagen của Google")
                     
                     with gr.Group():
                         prompt = gr.Textbox(label="✍️ Khơi Gợi Nội Dung (Prompt)", lines=4, placeholder="A futuristic city in cyberpunk style, neon lights reflections, hyperrealistic...")
@@ -115,8 +118,20 @@ def build_ui():
                     
         generate_btn.click(
             fn=process_generate,
-            inputs=[prompt, engine, local_url, local_model, neg_prompt, width, height, steps, cfg_scale, seed, auto_enhance],
+            inputs=[prompt, engine, local_url, local_model, gemini_model, neg_prompt, width, height, steps, cfg_scale, seed, auto_enhance],
             outputs=[output_image, final_prompt_out, status_out]
+        )
+        
+        def toggle_engine_settings(selected_engine):
+            if selected_engine == "Gemini":
+                return gr.update(visible=False), gr.update(visible=True)
+            else:
+                return gr.update(visible=True), gr.update(visible=False)
+
+        engine.change(
+            fn=toggle_engine_settings,
+            inputs=[engine],
+            outputs=[local_settings, gemini_settings]
         )
         
     return app, custom_theme, custom_css

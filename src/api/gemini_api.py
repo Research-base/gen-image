@@ -4,7 +4,7 @@ from PIL import Image
 from io import BytesIO
 import requests
 
-def generate_gemini_image(prompt: str, api_key: str):
+def generate_gemini_image(prompt: str, api_key: str, model_name: str = "imagen-4.0-generate-001"):
     """
     Attempts to generate an image using Gemini API (Rest fallback to imagen-3.0).
     """
@@ -12,7 +12,7 @@ def generate_gemini_image(prompt: str, api_key: str):
         return None, "Gemini API key is not set. Check your .env file."
     
     try:
-        url = f"https://generativelanguage.googleapis.com/models/gemini-2.5-flash-image:predict?key={api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:predict?key={api_key}"
         payload = {
             "instances": [
                 {
